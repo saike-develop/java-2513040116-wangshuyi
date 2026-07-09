@@ -1,0 +1,101 @@
+name: Java Compile Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  compile:
+    name: Compile (JDK ${{ matrix.java-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false          # 任一版本失败不中断另一个版本的检查
+      matrix:
+        java-version: [17, 21]
+
+    steps:
+      # ── 环境准备 ──────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java-version }} (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+
+      # ── 编译检查（核心逻辑） ──────────────────────────────────
+      - name: Compile all Java files under src/
+        id: compile
+        run: |
+          echo "=============================================="
+          echo " 🔍  Scanning src/ for .java files..."
+          echo "=============================================="
+          echo ""
+
+          # 收集所有 .java 文件
+          java_files=$(find src/ -name "*.java" -type f | sort)
+
+          # 空文件列表 → 无文件可编译，直接报错
+          if [ -z "$java_files" ]; then
+            echo "❌ Error: No .java files found under src/"
+            exit 1
+          fi
+
+          total=$(echo "$java_files" | wc -l | tr -d ' ')
+          passed=0
+          failed=0
+          failed_files=""
+
+          echo "📦 Found ${total} Java file(s) to compile."
+          echo "----------------------------------------------"
+          echo ""
+
+          # 逐个编译
+          for file in $java_files; do
+            # 为每个 .java 文件创建独立的输出目录，避免 .class 互相干扰
+            out_dir=$(mktemp -d)
+
+            echo " compiling: ${file}"
+            if javac -d "$out_dir" "$file" 2>&1; then
+              echo " ✅  PASS  — ${file}"
+              passed=$((passed + 1))
+            else
+              echo " ❌  FAIL  — ${file}"
+              failed=$((failed + 1))
+              failed_files="${failed_files}${file}\n"
+            fi
+
+            # 清理临时 .class 输出
+            rm -rf "$out_dir"
+            echo ""
+          done
+
+          # ── 汇总报告 ──────────────────────────────────────────
+          echo "=============================================="
+          echo " 📊  Compilation Summary"
+          echo "=============================================="
+          echo "  Total files : ${total}"
+          echo "  ✅  Passed   : ${passed}"
+          echo "  ❌  Failed   : ${failed}"
+          echo "=============================================="
+          echo ""
+
+          if [ "$failed" -gt 0 ]; then
+            echo "=============================================="
+            echo " ❌  Compilation failed — pipeline aborted"
+            echo "=============================================="
+            echo ""
+            echo "The following file(s) failed to compile:"
+            echo ""
+            printf "$failed_files"
+            echo ""
+            echo "👉  Please fix the errors above and push again."
+            exit 1
+          fi
+
+          echo "🎉  All files compiled successfully!"
+          exit 0
