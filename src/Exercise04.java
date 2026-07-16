@@ -7,16 +7,13 @@ public class Exercise04 {
         System.out.println("请输入一个年份：");
         int year = sc.nextInt();
         //读取用户输入的整数，赋值给变量year
-        if ((year%4==0 & year%100!=0)) {
+        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
             System.out.println(year + "年是闰年");
         } else {
             System.out.println(year + "年不是闰年");
         }
-        
+
         sc.close();
-    }
-    
-    public static boolean isLeapYear(int year) {
-        return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+        //关闭scanner，释放资源
     }
 }
