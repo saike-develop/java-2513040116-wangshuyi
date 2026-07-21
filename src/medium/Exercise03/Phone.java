@@ -1,6 +1,6 @@
 package medium.Exercise03;
 
-public class phone {
+public class Phone {
     String brand;
     double price;
     public void call(){

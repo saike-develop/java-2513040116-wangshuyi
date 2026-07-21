@@ -2,7 +2,7 @@ package medium.Exercise03;
 
 public class test {
     public static void main(String[] args) {
-        phone p = new phone();
+        Phone p = new Phone();
         p.brand = "华为";
 
         p.price = 5999;

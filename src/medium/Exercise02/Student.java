@@ -1,6 +1,6 @@
 package medium.Exercise02;
 
-public class student {
+public class Student {
     String name;
     int age;
     double score;
