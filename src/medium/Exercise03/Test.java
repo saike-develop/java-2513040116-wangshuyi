@@ -1,6 +1,6 @@
 package medium.Exercise03;
 
-public class test {
+public class Test {
     public static void main(String[] args) {
         Phone p = new Phone();
         p.brand = "华为";

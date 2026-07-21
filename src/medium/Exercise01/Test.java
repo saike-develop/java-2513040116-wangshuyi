@@ -1,6 +1,6 @@
 package medium.Exercise01;
 
-public class test {
+public class Test {
     public static void main(String[] args) {
         //创建对象，记录第一只小狗的信息
         //格式：类名 对象名 = new 类名();
