@@ -1,0 +1,11 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    uses: saike-develop/java-template-repo/.github/workflows/central-build.yml@main
