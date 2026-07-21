@@ -1,4 +1,5 @@
 package medium.Exercise01;
+import medium.Exercise01.Dog;
 
 public class Test {
     public static void main(String[] args) {

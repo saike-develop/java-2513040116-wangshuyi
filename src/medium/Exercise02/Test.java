@@ -1,4 +1,5 @@
 package medium.Exercise02;
+import medium.Exercise02.Student;
 public class Test {
     public static void main(String[] args) {
         Student s1 = new Student();
